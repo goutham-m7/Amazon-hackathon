@@ -14,6 +14,8 @@ import requests
 import urllib
 from PIL import Image
 
+
+
 def common_mistake(unit):
     if unit in constants.allowed_units:
         return unit
@@ -54,16 +56,18 @@ def download_image(image_link, save_folder, retries=3, delay=3):
     image_save_path = os.path.join(save_folder, filename)
 
     if os.path.exists(image_save_path):
-        return
+        return image_save_path
 
     for _ in range(retries):
         try:
             urllib.request.urlretrieve(image_link, image_save_path)
-            return
+            return image_save_path
         except:
             time.sleep(delay)
     
     create_placeholder_image(image_save_path) #Create a black placeholder image for invalid links/images
+    return image_save_path
+
 
 def download_images(image_links, download_folder, allow_multiprocessing=True):
     if not os.path.exists(download_folder):
@@ -80,4 +84,5 @@ def download_images(image_links, download_folder, allow_multiprocessing=True):
     else:
         for image_link in tqdm(image_links, total=len(image_links)):
             download_image(image_link, save_folder=download_folder, retries=3, delay=3)
-        
+
+
